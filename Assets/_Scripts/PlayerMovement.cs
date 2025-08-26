@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
@@ -25,7 +26,14 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Provide the Animator to set variables.")]
     [SerializeField] Animator animator;
 
+    [Header("Collision")]
+    [Tooltip("Layers that block player movement")]
+    public LayerMask collisionLayers = -1;
+    [Tooltip("Distance to check ahead for collisions")]
+    public float collisionCheckDistance = 0.1f;
+
     Rigidbody2D _rb;
+    Collider2D[] _colliders;
     Vector2 _input;
     bool _wantsSprint;
     bool _wantToHide;
@@ -34,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _colliders = GetComponents<Collider2D>();
     }
 
     void Update()
@@ -72,7 +81,20 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            _rb.MovePosition(_rb.position + _velocity * Time.fixedDeltaTime);
+            // Check for collisions before moving
+            Vector2 deltaPosition = _velocity * Time.fixedDeltaTime;
+            Vector2 newPosition = _rb.position + deltaPosition;
+            
+            // Only move if the path is clear
+            if (CanMoveTo(newPosition))
+            {
+                _rb.MovePosition(newPosition);
+            }
+            else
+            {
+                animator.SetBool("IsMoving", false);
+            }
+            
             if (animator)
             {
                 animator.SetBool("IsMoving", _input.sqrMagnitude > 0.01f);
@@ -82,6 +104,48 @@ public class PlayerMovement : MonoBehaviour
 
         // Always face movement direction
         FaceMovement();
+    }
+
+    bool CanMoveTo(Vector2 targetPosition)
+    {
+        Vector2 deltaPosition = targetPosition - _rb.position;
+        
+        // Check each collider on the player
+        foreach (Collider2D playerCollider in _colliders)
+        {
+            if (!playerCollider.enabled) continue; // Skip disabled colliders
+            
+            // Calculate where this specific collider would be at the target position
+            Vector2 colliderOffset = (Vector2)playerCollider.bounds.center - _rb.position;
+            Vector2 targetColliderCenter = targetPosition + colliderOffset;
+            
+            // Check if there's a collision at the target position for this collider
+            Collider2D hit = Physics2D.OverlapBox(
+                targetColliderCenter, 
+                playerCollider.bounds.size, 
+                0f, 
+                collisionLayers
+            );
+            
+            // If we hit something that isn't one of our own colliders, movement is blocked
+            if (hit != null && !IsOwnCollider(hit))
+            {
+                return false;
+            }
+        }
+        
+        return true; // All colliders are clear
+    }
+    
+    bool IsOwnCollider(Collider2D collider)
+    {
+        // Check if the collider belongs to this player
+        foreach (Collider2D playerCollider in _colliders)
+        {
+            if (collider == playerCollider)
+                return true;
+        }
+        return false;
     }
 
     void FaceMovement()
