@@ -34,12 +34,6 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        // Recommended Rigidbody2D settings for top-down:
-        // Body Type: Dynamic
-        // Gravity Scale: 0
-        // Interpolate: Interpolate
-        // Collision Detection: Continuous
-        // Freeze Z Rotation if you rotate via FlipX
     }
 
     void Update()
