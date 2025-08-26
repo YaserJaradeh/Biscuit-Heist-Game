@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -18,9 +19,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Input")]
     public KeyCode sprintKey = KeyCode.LeftShift;
 
+    public KeyCode hideKey = KeyCode.C;
+    
+    [Header("Animation")]
+    [Tooltip("Provide the Animator to set variables.")]
+    [SerializeField] Animator animator;
+
     Rigidbody2D _rb;
     Vector2 _input;
     bool _wantsSprint;
+    bool _wantToHide;
     Vector2 _velocity;
 
     void Awake()
@@ -42,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
         _input = Vector2.ClampMagnitude(new Vector2(ix, iy), 1f);
 
         _wantsSprint = Input.GetKey(sprintKey);
+        _wantToHide = Input.GetKey(hideKey);
     }
 
     void FixedUpdate()
@@ -56,8 +65,26 @@ public class PlayerMovement : MonoBehaviour
         float t = 1f - Mathf.Exp(-accel * Time.fixedDeltaTime);
         _velocity = Vector2.Lerp(_velocity, targetVel, t);
 
-        // Move
-        _rb.MovePosition(_rb.position + _velocity * Time.fixedDeltaTime);
+        // Move or Hide
+        if (_wantToHide)
+        {
+            // If hiding, stop movement
+            _velocity = Vector2.zero;
+            if (animator)
+            {
+                animator.SetBool("IsHiding", true);
+                animator.SetBool("IsMoving", false);
+            }
+        }
+        else
+        {
+            _rb.MovePosition(_rb.position + _velocity * Time.fixedDeltaTime);
+            if (animator)
+            {
+                animator.SetBool("IsMoving", _input.sqrMagnitude > 0.01f);
+                animator.SetBool("IsHiding", false);
+            }
+        }
 
         // Always face movement direction
         FaceMovement();
