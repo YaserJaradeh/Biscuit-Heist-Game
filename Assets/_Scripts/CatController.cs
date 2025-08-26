@@ -35,7 +35,6 @@ public class CatController : MonoBehaviour
     int _currentTargetIndex = 0;
     float _waitTimer = 0f;
     bool _isWaiting = false;
-    bool _isSeeking = false;
 
     void Awake()
     {
@@ -100,7 +99,6 @@ public class CatController : MonoBehaviour
                 // Reached target, start waiting
                 _isWaiting = true;
                 _waitTimer = waitTime;
-                _isSeeking = false;
                 
                 if (animator)
                 {
@@ -133,7 +131,6 @@ public class CatController : MonoBehaviour
             _currentTarget = pointsOfInterest[_currentTargetIndex];
         }
 
-        _isSeeking = true;
         if (animator)
         {
             animator.SetBool("IsSeeking", true);
@@ -203,7 +200,6 @@ public class CatController : MonoBehaviour
                 else
                 {
                     _currentTarget = null;
-                    _isSeeking = false;
                     if (animator)
                     {
                         animator.SetBool("IsSeeking", false);

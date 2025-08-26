@@ -20,6 +20,10 @@ public class FollowPlayer : MonoBehaviour
     [Tooltip("Clamp for lookahead (world units).")]
     public Vector2 lookaheadClamp = new Vector2(2.5f, 1.8f);
 
+    [Header("Camera Bounds")]
+    [Tooltip("Optional: Box Collider 2D that defines camera movement bounds. Camera will be clamped within these bounds.")]
+    public BoxCollider2D boundingBox;
+
     [Header("Zoom (optional)")]
     public bool enableSpeedZoom = false;
     [Tooltip("Orthographic size at rest.")]
@@ -141,6 +145,12 @@ public class FollowPlayer : MonoBehaviour
         float smoothT = 1f - Mathf.Pow(followSmoothing, Time.deltaTime * 60f); // Frame-rate independent
         current = Vector2.Lerp(current, desiredCam, smoothT);
 
+        // --- Apply camera bounds clamping ---
+        if (boundingBox != null)
+        {
+            current = ClampCameraToBounds(current);
+        }
+
         // --- Screen shake (applied last) ---
         Vector2 shake = Vector2.zero;
         if (_shakeStrength > 0.0001f)
@@ -168,6 +178,57 @@ public class FollowPlayer : MonoBehaviour
 
         _lastTargetPos = tpos;
         _hadLastPos = true;
+    }
+
+    /// <summary>
+    /// Clamps the camera position to stay within the bounds of the specified BoxCollider2D.
+    /// Takes into account the camera's orthographic size to ensure the camera view doesn't go outside the bounds.
+    /// </summary>
+    /// <param name="cameraPosition">The desired camera position</param>
+    /// <returns>The clamped camera position</returns>
+    Vector2 ClampCameraToBounds(Vector2 cameraPosition)
+    {
+        if (boundingBox == null) return cameraPosition;
+
+        // Get the bounds of the BoxCollider2D
+        Bounds bounds = boundingBox.bounds;
+        
+        // Calculate camera view extents based on orthographic size and aspect ratio
+        float cameraHeight = _cam.orthographicSize * 2f;
+        float cameraWidth = cameraHeight * _cam.aspect;
+        
+        // Calculate the half extents of the camera view
+        float halfCameraWidth = cameraWidth * 0.5f;
+        float halfCameraHeight = cameraHeight * 0.5f;
+        
+        // Calculate the min and max positions the camera center can be at
+        float minX = bounds.min.x + halfCameraWidth;
+        float maxX = bounds.max.x - halfCameraWidth;
+        float minY = bounds.min.y + halfCameraHeight;
+        float maxY = bounds.max.y - halfCameraHeight;
+        
+        // If the bounding area is smaller than the camera view, center the camera
+        if (minX > maxX) 
+        {
+            float centerX = (bounds.min.x + bounds.max.x) * 0.5f;
+            cameraPosition.x = centerX;
+        }
+        else
+        {
+            cameraPosition.x = Mathf.Clamp(cameraPosition.x, minX, maxX);
+        }
+        
+        if (minY > maxY) 
+        {
+            float centerY = (bounds.min.y + bounds.max.y) * 0.5f;
+            cameraPosition.y = centerY;
+        }
+        else
+        {
+            cameraPosition.y = Mathf.Clamp(cameraPosition.y, minY, maxY);
+        }
+        
+        return cameraPosition;
     }
 
     /// <summary>
