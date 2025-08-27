@@ -169,6 +169,7 @@ public class PlayerMovement : MonoBehaviour
             // Exit the level
             Debug.Log("Level Complete!");
             Destroy(gameObject);
+            GameManager.Instance.ExitRoom();
         }
         
     }
