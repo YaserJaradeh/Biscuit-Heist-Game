@@ -162,8 +162,15 @@ public class PlayerMovement : MonoBehaviour
         {
             // Consume the cookie
             Destroy(other.gameObject);
-            Debug.Log("Cookie consumed!");
+            GameManager.Instance.CollectCookie();
         }
+        else if (other.gameObject.CompareTag("Exit"))
+        {
+            // Exit the level
+            Debug.Log("Level Complete!");
+            Destroy(gameObject);
+        }
+        
     }
 
 #if UNITY_EDITOR
