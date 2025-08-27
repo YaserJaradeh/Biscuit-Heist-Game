@@ -29,8 +29,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Collision")]
     [Tooltip("Layers that block player movement")]
     public LayerMask collisionLayers = -1;
-    [Tooltip("Distance to check ahead for collisions")]
-    public float collisionCheckDistance = 0.1f;
 
     Rigidbody2D _rb;
     Collider2D[] _colliders;
@@ -73,11 +71,8 @@ public class PlayerMovement : MonoBehaviour
         {
             // If hiding, stop movement
             _velocity = Vector2.zero;
-            if (animator)
-            {
-                animator.SetBool("IsHiding", true);
-                animator.SetBool("IsMoving", false);
-            }
+            animator.SetBool("IsHiding", true);
+            animator.SetBool("IsMoving", false);
         }
         else
         {
@@ -89,16 +84,12 @@ public class PlayerMovement : MonoBehaviour
             if (CanMoveTo(newPosition))
             {
                 _rb.MovePosition(newPosition);
+                animator.SetBool("IsMoving", _input.sqrMagnitude > 0.01f);
+                animator.SetBool("IsHiding", false);
             }
             else
             {
                 animator.SetBool("IsMoving", false);
-            }
-            
-            if (animator)
-            {
-                animator.SetBool("IsMoving", _input.sqrMagnitude > 0.01f);
-                animator.SetBool("IsHiding", false);
             }
         }
 
@@ -108,8 +99,6 @@ public class PlayerMovement : MonoBehaviour
 
     bool CanMoveTo(Vector2 targetPosition)
     {
-        Vector2 deltaPosition = targetPosition - _rb.position;
-        
         // Check each collider on the player
         foreach (Collider2D playerCollider in _colliders)
         {
@@ -130,6 +119,7 @@ public class PlayerMovement : MonoBehaviour
             // If we hit something that isn't one of our own colliders, movement is blocked
             if (hit != null && !IsOwnCollider(hit))
             {
+                Debug.Log("Movement blocked by " + hit.name);
                 return false;
             }
         }
@@ -161,6 +151,18 @@ public class PlayerMovement : MonoBehaviour
                 bool faceRight = _velocity.x > 0f;
                 spriteRenderer.flipX = !faceRight;
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other == null) return;
+        
+        if (other.gameObject.CompareTag("Cookie"))
+        {
+            // Consume the cookie
+            Destroy(other.gameObject);
+            Debug.Log("Cookie consumed!");
         }
     }
 

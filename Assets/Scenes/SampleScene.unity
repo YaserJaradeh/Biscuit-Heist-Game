@@ -220,6 +220,50 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0.23, y: 0.29}
   m_Radius: 0.69608974
+--- !u!1 &152924136
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 152924138}
+  - component: {fileID: 152924137}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &152924137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152924136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4323e2c92153a74bbff2ec3ce93b0ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+--- !u!4 &152924138
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152924136}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &270254557
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,7 +482,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 136
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 55
@@ -469,7 +513,6 @@ MonoBehaviour:
   collisionLayers:
     serializedVersion: 2
     m_Bits: 8
-  collisionCheckDistance: 0.1
 --- !u!61 &324475727
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1950,9 +1993,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1139615584}
   - component: {fileID: 1139615585}
-  m_Layer: 0
+  - component: {fileID: 1139615586}
+  m_Layer: 7
   m_Name: Cookie
-  m_TagString: Untagged
+  m_TagString: Cookie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1992,6 +2036,42 @@ MonoBehaviour:
   gingerBreadManSprite: {fileID: 21300000, guid: 82883534d2bcc7c468d111550aaa2c7b, type: 3}
   wafflesSprite: {fileID: 21300000, guid: 11ef5f5c22cdcf6419c6797dd9031ff5, type: 3}
   pancakesSprite: {fileID: 21300000, guid: 9ba7b39156ce0b94397937e7db9b743e, type: 3}
+--- !u!58 &1139615586
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139615583}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: -0.03}
+  m_Radius: 0.27417207
 --- !u!1 &1148457446
 GameObject:
   m_ObjectHideFlags: 0
@@ -2248,7 +2328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1368049844}
   - component: {fileID: 1368049845}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Art
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7166,3 +7246,4 @@ SceneRoots:
   - {fileID: 1148457447}
   - {fileID: 1661858315}
   - {fileID: 104942425}
+  - {fileID: 152924138}
